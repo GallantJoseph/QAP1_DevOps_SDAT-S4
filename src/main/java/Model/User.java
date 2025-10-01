@@ -87,4 +87,24 @@ public class User {
     public void setHeightCm(int heightCm) {
         this.heightCm = heightCm;
     }
+
+    public int getAge() {
+        if (dateOfBirth == null) {
+            return 0;
+        }
+
+        return LocalDate.now().getYear() - dateOfBirth.getYear();
+    }
+
+    @Override
+    public String toString() {
+        return  "\nID:              " + id +
+                "\nUsername:        " + username +
+                "\nFirst Name:      " + firstName +
+                "\nLast Name:       " + lastName +
+                "\nDate of Birth:   " + dateOfBirth +
+                "\nAge:             " + getAge() +
+                "\nWeight (kg):     " + weightKg +
+                "\nHeight (cm):     " + heightCm;
+    }
 }
