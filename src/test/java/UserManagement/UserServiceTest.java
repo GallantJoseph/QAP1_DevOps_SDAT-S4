@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class UserServiceTest {
 
     @Test
@@ -77,5 +75,17 @@ class UserServiceTest {
 
         userServiceForTest.logout();
         Assertions.assertNull(userServiceForTest.getLoggedInUser());
+    }
+
+    @Test
+    void testForUsernameExists() {
+        UserService userServiceForTest = new UserService();
+
+        User userForTest = new User();
+        userForTest.setUsername("timcook");
+
+        userServiceForTest.registerUser(userForTest);
+
+        Assertions.assertTrue(userServiceForTest.usernameExists("timcook"));
     }
 }

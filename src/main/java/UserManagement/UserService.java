@@ -14,14 +14,16 @@ public class UserService {
 
     public boolean registerUser(User user) {
         if (user != null) {
-            users.add(user);
-            System.out.println("User registered successfully: " + user.getUsername());
-            return true;
+            if (!usernameExists(user.getUsername())) {
+                users.add(user);
+                System.out.println("\nUser registered successfully: " + user.getUsername() + "\n");
+                return true;
+            }
         } else {
-            System.out.println("Cannot register the user: user is null");
-            return false;
+            System.out.println("\nCannot register the user: user is null\n");
         }
 
+        return false;
     }
 
     public User getLoggedInUser() {
@@ -32,13 +34,30 @@ public class UserService {
         for (User user : users) {
             if (user.getUsername().equals(username) && user.verifyPassword(password)) {
                 this.loggedInUser = user;
+
+                System.out.println("\nLogged in successfully.\n");
                 return user;
             }
         }
+
+        System.out.println("\nInvalid username or password.\n");
         return null;
     }
 
     public void logout() {
         this.loggedInUser = null;
+
+        System.out.println("\nLogged out successfully.\n");
+    }
+
+    public boolean usernameExists(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                System.out.printf("\nUser with username %s already exists.\n\n", username);
+                return true;
+            }
+        }
+
+        return false;
     }
 }
