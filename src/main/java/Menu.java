@@ -56,17 +56,41 @@ public class Menu {
     }
 
     private void authenticatedMenu() {
-        System.out.printf("Welcome back, %s!\n", userService.getLoggedInUser().getFirstName());
+        int option = 0;
+
+        do {
+            System.out.printf("Welcome back, %s!\n", userService.getLoggedInUser().getFirstName());
 //        System.out.println("1. Track Cardio");
 //        System.out.println("2. Track Workouts");
 //        System.out.println("3. Track Goals");
-//        System.out.println("4. View Profile");
-//        System.out.println("5. Logout");
-//        System.out.print("\nPlease select an option: ");
-        // TODO: Implement authenticated menu options and remove logout and pressEnterToContinue
+            System.out.println("1. My Profile");
+            System.out.println("2. Logout");
+            System.out.print("\nPlease select an option: ");
 
-        userService.logout();
-        pressEnterToContinue();
+            if (scanner.hasNextInt()) {
+                option = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("\nInvalid input. Please enter a number.");
+                scanner.nextLine();
+                pressEnterToContinue();
+                continue;
+            }
+
+            switch (option) {
+                case 1:
+                    manageUserProfile();
+                    pressEnterToContinue();
+                    break;
+                case 2:
+                    userService.logout();
+                    pressEnterToContinue();
+                    return;
+                default:
+                    System.out.println("\nInvalid option. Please try again.");
+                    pressEnterToContinue();
+            }
+        } while(true);
     }
 
     private void loginMenu() {
@@ -233,6 +257,101 @@ public class Menu {
         pressEnterToContinue();
     }
 
+    private void manageUserProfile(){
+        String input;
+
+        System.out.println("\nYour Profile Details:");
+        System.out.println(userService.getLoggedInUser());
+
+        System.out.print("\nWould you like to update your profile? (y/n): ");
+
+        do {
+            input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("y")) {
+                String firstName = "";
+                String lastName = "";
+                int weightKg = 0;
+
+                System.out.println("\nPlease re-enter your details. Leave blank to keep unchanged.\n");
+
+                System.out.println("First Name: " + userService.getLoggedInUser().getFirstName());
+                System.out.print("New First Name: ");
+                input = scanner.nextLine();
+
+                if (!input.isBlank()) {
+                    firstName = input;
+                } else {
+                    System.out.println("Keeping previous value.");
+                }
+
+                System.out.println("\nLast Name: " + userService.getLoggedInUser().getLastName());
+                System.out.print("New Last Name: ");
+                input = scanner.nextLine();
+
+                if (!input.isBlank()) {
+                    lastName = input;
+                } else{
+                    System.out.println("Keeping previous value.");
+                }
+
+                System.out.println("\nWeight (kg): " + userService.getLoggedInUser().getWeightKg());
+                System.out.print("New Weight (kg): ");
+                input = scanner.nextLine();
+
+                if (!input.isBlank()) {
+                    try {
+                        weightKg = Integer.parseInt(input);
+
+                        if (weightKg < 0) {
+                            weightKg = 0;
+                            System.out.println("Weight must be a positive number. Keeping previous value.");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Keeping previous weight value.");
+                    }
+                } else{
+                    System.out.println("Keeping previous value.");
+                }
+
+                System.out.print("\nConfirm update? (y/n): ");
+
+                do {
+                    input = scanner.nextLine();
+
+                    if (input.equalsIgnoreCase("y")) {
+                        User loggedInUser = userService.getLoggedInUser();
+
+                        if (!firstName.isBlank()) {
+                            loggedInUser.setFirstName(firstName);
+                        }
+
+                        if (!lastName.isBlank()) {
+                            loggedInUser.setLastName(lastName);
+                        }
+
+                        if (weightKg > 0) {
+                            loggedInUser.setWeightKg(weightKg);
+                        }
+
+                        System.out.println("\nProfile updated successfully.");
+                        return;
+                    } else if (input.equalsIgnoreCase("n")) {
+                        System.out.println("\nUpdate cancelled. No changes were made.");
+                        return;
+                    } else {
+                        System.out.print("\nInvalid input. Please enter 'y' or 'n': ");
+                    }
+                } while (true);
+
+            } else if (input.equalsIgnoreCase("n")) {
+                return;
+            } else {
+                System.out.print("\nInvalid input. Please enter 'y' or 'n': ");
+            }
+        } while (true);
+    }
+
     private void pressEnterToContinue() {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
@@ -250,6 +369,5 @@ public class Menu {
         user.setHeightCm(175);
 
         userService.registerUser(user);
-        //userService.login("johndoe", "password123");
     }
 }
