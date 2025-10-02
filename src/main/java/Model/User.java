@@ -3,6 +3,7 @@ package Model;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class User {
     private static long idCounter = 1;
@@ -15,6 +16,7 @@ public class User {
     private LocalDate dateOfBirth;
     private int weightKg;
     private int heightCm;
+    private final ArrayList<CardioExercise> cardioExercises = new ArrayList<>();
 
     public User(){
         this.id = idCounter++;
@@ -86,6 +88,14 @@ public class User {
 
     public void setHeightCm(int heightCm) {
         this.heightCm = heightCm;
+    }
+
+    public ArrayList<CardioExercise> getCardioExercises() {
+        return cardioExercises;
+    }
+
+    public void addCardioExercise(CardioExercise cardioExercise) {
+        this.cardioExercises.add(cardioExercise);
     }
 
     public int getAge() {

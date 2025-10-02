@@ -1,3 +1,4 @@
+import Model.CardioExercise;
 import Model.User;
 import UserManagement.UserService;
 
@@ -56,15 +57,15 @@ public class Menu {
     }
 
     private void authenticatedMenu() {
+        final int QUIT_OPTION = 3;
         int option = 0;
 
         do {
-            System.out.printf("Welcome back, %s!\n", userService.getLoggedInUser().getFirstName());
-//        System.out.println("1. Track Cardio");
-//        System.out.println("2. Track Workouts");
-//        System.out.println("3. Track Goals");
-            System.out.println("1. My Profile");
-            System.out.println("2. Logout");
+            System.out.printf("\nWelcome back, %s!\n", userService.getLoggedInUser().getFirstName());
+            System.out.println("1. Track Cardio Sessions");
+//        System.out.println("2. Track Goals");
+            System.out.println("2. My Profile");
+            System.out.println("3. Logout");
             System.out.print("\nPlease select an option: ");
 
             if (scanner.hasNextInt()) {
@@ -79,10 +80,14 @@ public class Menu {
 
             switch (option) {
                 case 1:
-                    manageUserProfile();
+                    trackCardioSessionsMenu();
                     pressEnterToContinue();
                     break;
                 case 2:
+                    manageUserProfile();
+                    pressEnterToContinue();
+                    break;
+                case QUIT_OPTION:
                     userService.logout();
                     pressEnterToContinue();
                     return;
@@ -257,6 +262,46 @@ public class Menu {
         pressEnterToContinue();
     }
 
+    private void trackCardioSessionsMenu(){
+        int option = 0;
+
+        do {
+            System.out.println("\nCardio Sessions Tracking");
+            System.out.println("-----------------------------------");
+            System.out.println("1. Log Cardio Session");
+            System.out.println("2. View Cardio History");
+            System.out.println("3. Back to Main Menu");
+
+            System.out.print("\nPlease select an option: ");
+
+            if (scanner.hasNextInt()) {
+                option = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("\nInvalid input. Please enter a number.");
+                scanner.nextLine();
+                pressEnterToContinue();
+                continue;
+            }
+
+            switch (option) {
+                case 1:
+                    userService.logCardioSession();
+                    pressEnterToContinue();
+                    break;
+                case 2:
+                    userService.viewCardioSessionHistory();
+                    pressEnterToContinue();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("\nInvalid option. Please try again.");
+                    pressEnterToContinue();
+            }
+        } while (true);
+    }
+
     private void manageUserProfile(){
         String input;
 
@@ -353,7 +398,7 @@ public class Menu {
     }
 
     private void pressEnterToContinue() {
-        System.out.println("\nPress Enter to continue...");
+        System.out.print("\nPress Enter to continue...");
         scanner.nextLine();
     }
 
