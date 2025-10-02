@@ -61,10 +61,9 @@ public class Menu {
         int option = 0;
 
         do {
-            System.out.printf("Welcome back, %s!\n", userService.getLoggedInUser().getFirstName());
-            System.out.println("1. Track Cardio");
-//        System.out.println("2. Track Workouts");
-//        System.out.println("3. Track Goals");
+            System.out.printf("\nWelcome back, %s!\n", userService.getLoggedInUser().getFirstName());
+            System.out.println("1. Track Cardio Sessions");
+//        System.out.println("2. Track Goals");
             System.out.println("2. My Profile");
             System.out.println("3. Logout");
             System.out.print("\nPlease select an option: ");
@@ -81,7 +80,7 @@ public class Menu {
 
             switch (option) {
                 case 1:
-                    trackCardioMenu();
+                    trackCardioSessionsMenu();
                     pressEnterToContinue();
                     break;
                 case 2:
@@ -263,11 +262,11 @@ public class Menu {
         pressEnterToContinue();
     }
 
-    private void trackCardioMenu(){
+    private void trackCardioSessionsMenu(){
         int option = 0;
 
         do {
-            System.out.println("\nCardio Tracking");
+            System.out.println("\nCardio Sessions Tracking");
             System.out.println("-----------------------------------");
             System.out.println("1. Log Cardio Session");
             System.out.println("2. View Cardio History");
@@ -399,7 +398,7 @@ public class Menu {
     }
 
     private void pressEnterToContinue() {
-        System.out.println("\nPress Enter to continue...");
+        System.out.print("\nPress Enter to continue...");
         scanner.nextLine();
     }
 
