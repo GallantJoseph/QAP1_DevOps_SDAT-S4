@@ -1,11 +1,13 @@
 package UserManagement;
 
 import Model.CardioExercise;
+import Model.Exercise;
 import Model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class UserService {
@@ -18,10 +20,11 @@ public class UserService {
 
     }
 
-    public boolean registerUser(User user) {
+    public boolean register(User user) {
         if (user != null) {
             if (!usernameExists(user.getUsername())) {
                 users.add(user);
+
                 System.out.println("\nUser registered successfully: " + user.getUsername() + "\n");
                 return true;
             }
@@ -65,6 +68,162 @@ public class UserService {
         }
 
         return false;
+    }
+
+    public void registerScreen() {
+        String username;
+        String password;
+        String firstName;
+        String lastName;
+        LocalDate dateOfBirth;
+        int weightKg;
+        int heightCm;
+        String input;
+
+        System.out.println("\nRegister a New Account");
+        System.out.println("-----------------------");
+        System.out.println("Please enter your details to create an account.\n");
+
+        do {
+            System.out.print("Username (leave blank to quit): ");
+            username = scanner.nextLine();
+
+            if (username.isBlank()) {
+                System.out.println("Registration cancelled.");
+                return;
+            }
+
+        } while (usernameExists(username));
+
+        do {
+            System.out.print("Password: ");
+            password = scanner.nextLine();
+
+            if (password.isBlank()) {
+                System.out.println("Password cannot be blank. Please try again\n");
+            } else
+                break;
+        } while (true);
+
+        do {
+            System.out.print("First Name: ");
+            firstName = scanner.nextLine();
+
+            if (firstName.isBlank()) {
+                System.out.println("First name cannot be blank. Please try again.\n ");
+            } else
+                break;
+        } while (true);
+
+        do {
+            System.out.print("Last Name: ");
+            lastName = scanner.nextLine();
+
+            if (lastName.isBlank()) {
+                System.out.println("Last name cannot be blank. Please try again.\n ");
+            } else
+                break;
+        } while (true);
+
+        do {
+            System.out.print("Date of Birth (YYYY-MM-DD): ");
+            input = scanner.nextLine();
+
+            try {
+                dateOfBirth = LocalDate.parse(input);
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter your date of birth in the format YYYY-MM-DD\n ");
+            }
+        } while (true);
+
+        do {
+            System.out.print("Weight (kg): ");
+            input = scanner.nextLine();
+
+            if (input.isBlank()) {
+                System.out.println("Weight cannot be blank. Please try again.\n ");
+                continue;
+            }
+
+            try {
+                weightKg = Integer.parseInt(input);
+
+                if (weightKg <= 0) {
+                    System.out.println("Weight must be a positive number. Please try again.\n ");
+                } else
+                    break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number for weight.\n ");
+            }
+        } while (true);
+
+        do {
+            System.out.print("Height (cm): ");
+            input = scanner.nextLine();
+
+            if (input.isBlank()) {
+                System.out.println("Height cannot be blank. Please try again.\n ");
+                continue;
+            }
+
+            try {
+                heightCm = Integer.parseInt(input);
+
+                if (heightCm <= 0) {
+                    System.out.println("Height must be a positive number. Please try again.\n ");
+                } else
+                    break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number for height.\n ");
+            }
+        } while (true);
+
+        User newUser = new User();
+
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setDateOfBirth(dateOfBirth);
+        newUser.setWeightKg(weightKg);
+        newUser.setHeightCm(heightCm);
+
+        register(newUser);
+    }
+
+    public void loginScreen() {
+        String username;
+        String password;
+
+        System.out.println("\nLogin to Your Account");
+        System.out.println("---------------------");
+
+        System.out.print("Username: ");
+
+        do {
+            username = scanner.nextLine();
+
+            if(username.isBlank()) {
+                System.out.print("Username cannot be blank. Please enter your username: ");
+            } else {
+                break;
+            }
+        } while (true);
+
+        System.out.print("Password: ");
+
+        do {
+            password = scanner.nextLine();
+
+            if(password.isBlank()) {
+                System.out.print("Password cannot be blank. Please enter your password: ");
+            } else {
+                break;
+            }
+        } while (true);
+
+        loggedInUser = login(username, password);
     }
 
     public void logCardioSession(){
@@ -160,14 +319,21 @@ public class UserService {
             return;
         }
 
+        final int LAST_7_DAYS_OPTION = 1;
+        final int LAST_30_DAYS_OPTION = 2;
+        final int DATE_RANGE_OPTION = 3;
+        final int ALL_SESSIONS_OPTION = 4;
+        final int BACK_TO_MENU_OPTION = 5;
+
         int option = 0;
 
         LocalDate today = LocalDate.now();
-        LocalDate sevenDaysAgo = today.minusDays(7);
-        LocalDate thirtyDaysAgo = today.minusDays(30);
+        LocalDate lastSevenDays = today.minusDays(6); // Including today
+        LocalDate lastThirtyDays = today.minusDays(29); // Including today
 
         do {
-            System.out.println("\nPlease select from the following cardio session history options:\n");
+            System.out.println("\nPlease select from the following cardio session history options");
+            System.out.println("---------------------------------------------------------------");
             System.out.println("1. View cardio sessions for the last 7 days");
             System.out.println("2. View cardio sessions for the last 30 days");
             System.out.println("3. View cardio sessions within a date range");
@@ -187,13 +353,13 @@ public class UserService {
             }
 
             switch (option) {
-                case 1:
-                    viewCardioSessionsInDateRange(sevenDaysAgo, today);
+                case LAST_7_DAYS_OPTION:
+                    viewCardioSessionsInDateRange(lastSevenDays, today);
                     break;
-                case 2:
-                    viewCardioSessionsInDateRange(thirtyDaysAgo, today);
+                case LAST_30_DAYS_OPTION:
+                    viewCardioSessionsInDateRange(lastThirtyDays, today);
                     break;
-                case 3:
+                case DATE_RANGE_OPTION:
                     // Prompt user for start and end dates to show sessions between those dates
                     LocalDate startDate;
                     LocalDate endDate;
@@ -222,10 +388,10 @@ public class UserService {
 
                     viewCardioSessionsInDateRange(startDate, endDate);
                     break;
-                case 4:
-                    viewCardioSessionsInDateRange(LocalDate.of(1900, 1, 1), today);
+                case ALL_SESSIONS_OPTION:
+                    viewCardioSessionsInDateRange(LocalDate.MIN, today);
                     break;
-                case 5:
+                case BACK_TO_MENU_OPTION:
                     return;
                 default:
                     System.out.println("\nInvalid option. Please try again.");
@@ -243,6 +409,7 @@ public class UserService {
         ArrayList<CardioExercise> filteredExercises = new ArrayList<>();
 
         float distanceSum = 0f;
+        int numberOfDays;
 
         if (cardioExercises.isEmpty()) {
             System.out.println("\nNo cardio sessions logged yet.\n");
@@ -261,6 +428,17 @@ public class UserService {
             return;
         }
 
+        // Sort the filtered exercises by date in ascending order
+        filteredExercises.sort(Comparator.comparing(Exercise::getDate));
+
+        // Calculate the number of days correctly when displaying all sessions,
+        // and display from first logged session date
+        if (startDate.equals(LocalDate.MIN)) {
+            startDate = filteredExercises.getFirst().getDate();
+        }
+
+        numberOfDays = (int) (endDate.toEpochDay() - startDate.toEpochDay()) + 1;
+
         System.out.println("\nCardio Session History for " + loggedInUser.getFirstName() + " " + loggedInUser.getLastName() +
                            " from " + startDate + " to " + endDate);
 
@@ -273,10 +451,11 @@ public class UserService {
             distanceSum += exercise.getDistanceKm();
         }
 
-        System.out.println("\n\nTotal distance over this period: " + distanceSum + " km" );
-        System.out.println("Your average distance: " + distanceSum/filteredExercises.size() + " km\n" );
+        System.out.printf("\n\nTotal distance over this period: %.2f km\n", distanceSum);
+        System.out.printf("Your average daily distance in the past %d day(s): %.2f km\n",
+                numberOfDays, distanceSum/numberOfDays);
 
-        System.out.println("Your daily distance goal is: " + (loggedInUser.getDailyDistanceGoalKm() > 0 ?
+        System.out.println("\nYour daily distance goal is: " + (loggedInUser.getDailyDistanceGoalKm() > 0 ?
                 loggedInUser.getDailyDistanceGoalKm() + " km" : "No daily distance goal set") + "\n");
 
         System.out.print("Press Enter to continue...");
@@ -309,7 +488,9 @@ public class UserService {
                 float dailyDistanceGoalKm = 0f;
 
                 do {
-                    System.out.print("\nEnter your weight goal in kg ('0' to remove or leave blank to keep current): ");
+                    System.out.println("\nLeave blank to keep current value or enter '0' to remove the goal.");
+
+                    System.out.print("\nEnter your weight goal in kilograms: ");
                     input = scanner.nextLine();
 
                     if (input.isBlank()) {
@@ -330,7 +511,7 @@ public class UserService {
                 } while (true);
 
                 do {
-                    System.out.print("\nEnter your daily distance goal in km ('0' to remove or leave blank to keep current): ");
+                    System.out.print("\nEnter your daily distance goal in kilometers: ");
                     input = scanner.nextLine();
 
                     if (input.isBlank()) {
@@ -361,7 +542,103 @@ public class UserService {
                 System.out.println("\nInvalid input. Please enter 'y' or 'n'.");
             }
         } while (true);
+    }
 
+    public void manageProfile(){
+        if (loggedInUser == null) {
+            System.out.println("\nPlease log in to manage your profile.\n");
+            return;
+        }
 
+        String input;
+
+        System.out.println("\nYour Profile Details:");
+        System.out.println(loggedInUser);
+
+        System.out.print("\nWould you like to update your profile? (y/n): ");
+
+        do {
+            input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("y")) {
+                String firstName = "";
+                String lastName = "";
+                int weightKg = 0;
+
+                System.out.println("\nPlease re-enter your details. Leave blank to keep unchanged.\n");
+
+                System.out.println("First Name: " + loggedInUser.getFirstName());
+                System.out.print("New First Name: ");
+                input = scanner.nextLine();
+
+                if (!input.isBlank()) {
+                    firstName = input;
+                } else {
+                    System.out.println("Keeping previous value.");
+                }
+
+                System.out.println("\nLast Name: " + loggedInUser.getLastName());
+                System.out.print("New Last Name: ");
+                input = scanner.nextLine();
+
+                if (!input.isBlank()) {
+                    lastName = input;
+                } else{
+                    System.out.println("Keeping previous value.");
+                }
+
+                System.out.println("\nWeight (kg): " + loggedInUser.getWeightKg());
+                System.out.print("New Weight (kg): ");
+                input = scanner.nextLine();
+
+                if (!input.isBlank()) {
+                    try {
+                        weightKg = Integer.parseInt(input);
+
+                        if (weightKg < 0) {
+                            weightKg = 0;
+                            System.out.println("Weight must be a positive number. Keeping previous value.");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Keeping previous weight value.");
+                    }
+                } else{
+                    System.out.println("Keeping previous value.");
+                }
+
+                System.out.print("\nConfirm update? (y/n): ");
+
+                do {
+                    input = scanner.nextLine();
+
+                    if (input.equalsIgnoreCase("y")) {
+                        if (!firstName.isBlank()) {
+                            loggedInUser.setFirstName(firstName);
+                        }
+
+                        if (!lastName.isBlank()) {
+                            loggedInUser.setLastName(lastName);
+                        }
+
+                        if (weightKg > 0) {
+                            loggedInUser.setWeightKg(weightKg);
+                        }
+
+                        System.out.println("\nProfile updated successfully.");
+                        return;
+                    } else if (input.equalsIgnoreCase("n")) {
+                        System.out.println("\nUpdate cancelled. No changes were made.");
+                        return;
+                    } else {
+                        System.out.print("\nInvalid input. Please enter 'y' or 'n': ");
+                    }
+                } while (true);
+
+            } else if (input.equalsIgnoreCase("n")) {
+                return;
+            } else {
+                System.out.print("\nInvalid input. Please enter 'y' or 'n': ");
+            }
+        } while (true);
     }
 }

@@ -22,7 +22,7 @@ class UserServiceTest {
         userForTest.setWeightKg(75);
         userForTest.setDateOfBirth(LocalDate.of(1960, 11, 1));
 
-        Assertions.assertTrue(userServiceForTest.registerUser(userForTest));
+        Assertions.assertTrue(userServiceForTest.register(userForTest));
     }
 
     @Test
@@ -31,7 +31,7 @@ class UserServiceTest {
 
         User userForTest = null;
 
-        Assertions.assertFalse(userServiceForTest.registerUser(userForTest));
+        Assertions.assertFalse(userServiceForTest.register(userForTest));
     }
 
     @Test
@@ -48,7 +48,7 @@ class UserServiceTest {
         userForTest.setWeightKg(75);
         userForTest.setDateOfBirth(LocalDate.of(1960, 11, 1));
 
-        userServiceForTest.registerUser(userForTest);
+        userServiceForTest.register(userForTest);
 
         User loggedInUser = userServiceForTest.login("timcook", "apple123");
         Assertions.assertEquals(userForTest, loggedInUser);
@@ -68,7 +68,7 @@ class UserServiceTest {
         userForTest.setWeightKg(75);
         userForTest.setDateOfBirth(LocalDate.of(1960, 11, 1));
 
-        userServiceForTest.registerUser(userForTest);
+        userServiceForTest.register(userForTest);
 
         User loggedInUser = userServiceForTest.login("timcook", "apple123");
         Assertions.assertEquals(userForTest, loggedInUser);
@@ -84,7 +84,7 @@ class UserServiceTest {
         User userForTest = new User();
         userForTest.setUsername("timcook");
 
-        userServiceForTest.registerUser(userForTest);
+        userServiceForTest.register(userForTest);
 
         Assertions.assertTrue(userServiceForTest.usernameExists("timcook"));
     }

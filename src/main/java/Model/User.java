@@ -124,7 +124,16 @@ public class User {
             return 0;
         }
 
-        return LocalDate.now().getYear() - dateOfBirth.getYear();
+        LocalDate today = LocalDate.now();
+
+        int age = today.getYear() - dateOfBirth.getYear();
+
+        // If the user's birthday hasn't occurred yet this year, subtract one from the age
+        if (dateOfBirth.isAfter(today.withYear(dateOfBirth.getYear()))) {
+            age--;
+        }
+
+        return age;
     }
 
     @Override
