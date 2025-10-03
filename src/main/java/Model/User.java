@@ -17,9 +17,13 @@ public class User {
     private int weightKg;
     private int heightCm;
     private final ArrayList<CardioExercise> cardioExercises = new ArrayList<>();
+    private int weightGoalKg;
+    private float dailyDistanceGoalKm;
 
     public User(){
         this.id = idCounter++;
+        this.weightGoalKg = 0;
+        this.dailyDistanceGoalKm = 0f;
     }
 
     public static long getIdCounter() {
@@ -97,6 +101,23 @@ public class User {
     public void addCardioExercise(CardioExercise cardioExercise) {
         this.cardioExercises.add(cardioExercise);
     }
+
+    public int getWeightGoalKg() {
+        return weightGoalKg;
+    }
+
+    public void setWeightGoalKg(int weightGoalKg) {
+        this.weightGoalKg = weightGoalKg;
+    }
+
+    public float getDailyDistanceGoalKm() {
+        return dailyDistanceGoalKm;
+    }
+
+    public void setDailyDistanceGoalKm(float dailyDistanceGoalKm) {
+        this.dailyDistanceGoalKm = dailyDistanceGoalKm;
+    }
+
 
     public int getAge() {
         if (dateOfBirth == null) {
