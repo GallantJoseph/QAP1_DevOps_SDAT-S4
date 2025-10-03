@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class UserTest {
 
     @Test
@@ -15,20 +13,24 @@ class UserTest {
 
         userForTest.setPassword("apple123");
 
-        assertTrue(userForTest.verifyPassword("apple123"));
+        Assertions.assertTrue(userForTest.verifyPassword("apple123"));
     }
 
     @Test
     void testForGetAge() {
+        LocalDate today = LocalDate.now();
         final int USER_YEAR_OF_BIRTH = 1990;
 
         User userForTest = new User();
-
         userForTest.setDateOfBirth(LocalDate.of(USER_YEAR_OF_BIRTH, 1, 1));
 
-        LocalDate now = LocalDate.now();
+        LocalDate userForTestDateOfBirth = userForTest.getDateOfBirth();
+        int expectedAge = today.getYear() - userForTest.getDateOfBirth().getYear();
 
-        int expectedAge = now.getYear() - userForTest.getDateOfBirth().getYear();
+        // If the user's birthday hasn't occurred yet this year, subtract one from the age
+        if (userForTestDateOfBirth.isAfter(today.withYear(userForTestDateOfBirth.getYear()))) {
+            expectedAge--;
+        }
 
         Assertions.assertEquals(expectedAge, userForTest.getAge());
     }
