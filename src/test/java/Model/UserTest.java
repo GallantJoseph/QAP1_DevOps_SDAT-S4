@@ -14,6 +14,7 @@ class UserTest {
         userForTest.setPassword("apple123");
 
         Assertions.assertTrue(userForTest.verifyPassword("apple123"));
+        Assertions.assertFalse(userForTest.verifyPassword("apple124"));
     }
 
     @Test
