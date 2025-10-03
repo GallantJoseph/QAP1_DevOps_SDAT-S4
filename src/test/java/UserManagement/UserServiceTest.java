@@ -9,7 +9,7 @@ import java.time.LocalDate;
 class UserServiceTest {
 
     @Test
-    void testForRegisterUser() {
+    void testForRegister() {
         UserService userServiceForTest = new UserService();
 
         User userForTest = new User();
@@ -26,7 +26,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testForRegisterUserNull() {
+    void testForRegisterNull() {
         UserService userServiceForTest = new UserService();
 
         User userForTest = null;
