@@ -276,11 +276,92 @@ public class UserService {
         System.out.println("\n\nTotal distance over this period: " + distanceSum + " km" );
         System.out.println("Your average distance: " + distanceSum/filteredExercises.size() + " km\n" );
 
+        System.out.println("Your daily distance goal is: " + (loggedInUser.getDailyDistanceGoalKm() > 0 ?
+                loggedInUser.getDailyDistanceGoalKm() + " km" : "No daily distance goal set") + "\n");
+
         System.out.print("Press Enter to continue...");
         scanner.nextLine();
+    }
 
-        // TODO Show goal progress
-        //System.out.println("Your goal distance: " + " km\n" );
+    public void trackGoals() {
+        if (loggedInUser == null) {
+            System.out.println("\nPlease log in to track your goals.\n");
+            return;
+        }
+
+        String input;
+
+        System.out.println("\nMy Goals");
+        System.out.println("-------------------------------");
+        System.out.println("My current weight: " + loggedInUser.getWeightKg() + " kg");
+        System.out.println("My weight goal: " + (loggedInUser.getWeightGoalKg() > 0 ?
+                loggedInUser.getWeightGoalKg() + " kg" : "No weight goal set"));
+
+        System.out.println("\nMy daily distance goal: " + (loggedInUser.getDailyDistanceGoalKm() > 0 ?
+                loggedInUser.getDailyDistanceGoalKm() + " km" : "No daily distance goal set"));
+
+        do {
+            System.out.print("\nWould you like to set or update your goals? (y/n): ");
+            input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("y")) {
+                int weightGoalKg = 0;
+                float dailyDistanceGoalKm = 0f;
+
+                do {
+                    System.out.print("\nEnter your weight goal in kg ('0' to remove or leave blank to keep current): ");
+                    input = scanner.nextLine();
+
+                    if (input.isBlank()) {
+                        weightGoalKg = loggedInUser.getWeightGoalKg();
+                        break;
+                    }
+
+                    try {
+                        weightGoalKg = Integer.parseInt(input);
+
+                        if (weightGoalKg < 0) {
+                            System.out.println("The weight goal must be a positive number. Please try again.");
+                        } else
+                            break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("The weight goal value is invalid. Please enter a whole number.");
+                    }
+                } while (true);
+
+                do {
+                    System.out.print("\nEnter your daily distance goal in km ('0' to remove or leave blank to keep current): ");
+                    input = scanner.nextLine();
+
+                    if (input.isBlank()) {
+                        dailyDistanceGoalKm = loggedInUser.getDailyDistanceGoalKm();
+                        break;
+                    }
+
+                    try {
+                        dailyDistanceGoalKm = Float.parseFloat(input);
+
+                        if (dailyDistanceGoalKm < 0) {
+                            System.out.println("The distance goal must be a positive number. Please try again.");
+                        } else
+                            break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("The distance goal value is invalid. Please enter a number.");
+                    }
+                } while (true);
+
+                loggedInUser.setWeightGoalKg(weightGoalKg);
+                loggedInUser.setDailyDistanceGoalKm(dailyDistanceGoalKm);
+
+                System.out.println("\nGoals updated successfully!");
+                return;
+            } else if (input.equalsIgnoreCase("n")) {
+                return;
+            } else {
+                System.out.println("\nInvalid input. Please enter 'y' or 'n'.");
+            }
+        } while (true);
+
 
     }
 }

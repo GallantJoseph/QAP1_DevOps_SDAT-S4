@@ -57,15 +57,15 @@ public class Menu {
     }
 
     private void authenticatedMenu() {
-        final int QUIT_OPTION = 3;
+        final int QUIT_OPTION = 4;
         int option = 0;
 
         do {
             System.out.printf("\nWelcome back, %s!\n", userService.getLoggedInUser().getFirstName());
             System.out.println("1. Track Cardio Sessions");
-//        System.out.println("2. Track Goals");
-            System.out.println("2. My Profile");
-            System.out.println("3. Logout");
+            System.out.println("2. Track Goals");
+            System.out.println("3. My Profile");
+            System.out.println("4. Logout");
             System.out.print("\nPlease select an option: ");
 
             if (scanner.hasNextInt()) {
@@ -84,6 +84,10 @@ public class Menu {
                     pressEnterToContinue();
                     break;
                 case 2:
+                    userService.trackGoals();
+                    pressEnterToContinue();
+                    break;
+                case 3:
                     manageUserProfile();
                     pressEnterToContinue();
                     break;
